@@ -241,35 +241,39 @@ jobs:
             scan --root /workspace --dry-run
           echo "✅ Docker scan test passed"
 
-      - name: 🧪 Test Docker image - Full run with PRA folder
+      - name: 🧪 Test Docker image - Full run with test data
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Checkout PRA folder from workspace
-          mkdir -p /tmp/pra-test
-          cp -r PRA /tmp/pra-test/ || echo "⚠️  PRA folder not found, using current directory"
+          # Create test workspace with sample files
+          mkdir -p /tmp/ci-test-workspace
+          echo "# CI Test Repository" > /tmp/ci-test-workspace/README.md
+          echo "This repository was created automatically by CI/CD pipeline test" >> /tmp/ci-test-workspace/README.md
+          echo "Timestamp: $(date)" >> /tmp/ci-test-workspace/INFO.txt
+          mkdir -p /tmp/ci-test-workspace/src
+          echo "console.log('Hello from CI test');" > /tmp/ci-test-workspace/src/test.js
 
           # Generate unique repo name
           TIMESTAMP=$(date +%s)
           REPO_NAME="RogueBox-CI-Test-${TIMESTAMP}"
 
-          echo "🧪 Testing full-run in Docker with PRA folder → ${REPO_NAME}"
+          echo "🧪 Testing full-run in Docker with test data → ${REPO_NAME}"
 
-          # Run full-run in Docker
+          # Run full-run in Docker (private repo)
           docker run --rm \
-            -v /tmp/pra-test:/workspace \
+            -v /tmp/ci-test-workspace:/workspace \
             -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
             ${{ env.DOCKER_IMAGE }}:test \
             full-run \
-              --root /workspace/PRA \
+              --root /workspace \
               --repo-name "${REPO_NAME}" \
-              --public || {
+              --private || {
             echo "⚠️  Full-run test failed (non-blocking)"
             exit 0
           }
 
-          echo "✅ Docker full-run test passed - Repository created: ${REPO_NAME}"
+          echo "✅ Docker full-run test passed - Private repository created: ${REPO_NAME}"
           echo "📦 Repository URL: https://github.com/${{ github.actor }}/${REPO_NAME}"
 
       - name: 🏷️ Tag image for registry
