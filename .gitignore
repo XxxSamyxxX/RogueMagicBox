@@ -1,0 +1,16 @@
+build/
+CMakeFiles/
+CMakeCache.txt
+*.vcxproj*
+*.sln
+*.user
+*.log
+logs/
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.idb
+.DS_Store
+.idea/
+.vscode/

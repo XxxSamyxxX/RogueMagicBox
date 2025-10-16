@@ -1,0 +1,15 @@
+# Sensitive defaults
+*.key
+*.pem
+*.pfx
+*.kdbx
+.env
+id_*
+*token*
+# Common heavy assets
+*.iso
+*.zip
+*.tar.gz
+*.7z
+*.mp4
+*.mov

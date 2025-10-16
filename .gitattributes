@@ -1,0 +1,5 @@
+#pragma once
+
+# Files generated/maintained by RogueMagicBox (auto)
+/docs/PROOF_OF_WORK.md merge=union
+/logs/rogue.log -text
