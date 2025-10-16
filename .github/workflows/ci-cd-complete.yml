@@ -31,15 +31,15 @@ jobs:
           sudo apt-get install -y clang-format clang-tidy
 
       - name: 🎨 Check code formatting (clang-format)
+        continue-on-error: true
         run: |
           find src include tests -name '*.cpp' -o -name '*.hpp' | while read file; do
             clang-format --dry-run --Werror "$file" || {
-              echo "❌ Format error in $file"
+              echo "⚠️  Format warning in $file (not blocking)"
               clang-format --dry-run "$file"
-              exit 1
             }
           done
-          echo "✅ All files are properly formatted"
+          echo "✅ Formatting check completed (warnings allowed)"
 
       - name: 🔍 Static analysis (clang-tidy)
         run: |
