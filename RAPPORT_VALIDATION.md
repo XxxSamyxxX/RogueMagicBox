@@ -17,13 +17,15 @@
 **Status** : ✅ **VALIDÉ**
 
 **Framework** : Catch2 (via shim personnalisé)  
-**Couverture** : 
+**Couverture** :
+
 - `tests/test_scanner.cpp` - Tests du module de scan
 - `tests/test_gitops.cpp` - Tests des opérations Git
 - `tests/test_config.cpp` - Tests du parser de configuration
 - `tests/test_main.cpp` - Tests d'intégration
 
 **Résultat d'exécution** :
+
 ```
 Test project C:/Users/.../RogueMagicBox/build
     Start 1: rogue_tests
@@ -35,7 +37,8 @@ Test project C:/Users/.../RogueMagicBox/build
 **CI/CD Integration** : Stage 2 - Build & Unit Tests  
 **Fichier workflow** : `.github/workflows/ci-cd-complete.yml` lignes 82-98
 
-**Validation** : 
+**Validation** :
+
 - [x] Tests passent à 100%
 - [x] Intégrés dans CMake/CTest
 - [x] Exécutés dans la CI
@@ -49,10 +52,12 @@ Test project C:/Users/.../RogueMagicBox/build
 
 **Type** : End-to-End automatisés  
 **Scripts** :
+
 - `scripts/run_e2e_tests.sh` (Linux, 200+ lignes, 8 scénarios)
 - `scripts/run_e2e_tests.ps1` (Windows, 150+ lignes, 5 scénarios)
 
 **Scénarios testés** :
+
 1. ✅ Scan basique (`--root`, `--dry-run`)
 2. ✅ Scan avec filtres d'exclusion
 3. ✅ Init repo sans remote (`--no-remote`, `--dry-run`)
@@ -63,6 +68,7 @@ Test project C:/Users/.../RogueMagicBox/build
 8. ✅ Invalid command handling (Linux)
 
 **Résultat d'exécution** :
+
 ```
 [INFO] =========================================
 [INFO] RogueMagicBox E2E Regression Tests (Windows)
@@ -81,6 +87,7 @@ Test project C:/Users/.../RogueMagicBox/build
 **Fichier workflow** : `.github/workflows/ci-cd-complete.yml` lignes 125-175
 
 **Validation** :
+
 - [x] 8 scénarios implémentés
 - [x] Scripts Linux + Windows
 - [x] Tous les tests passent
@@ -98,6 +105,7 @@ Test project C:/Users/.../RogueMagicBox/build
 **Outils configurés** :
 
 **1. clang-format** (`.clang-format`)
+
 ```yaml
 BasedOnStyle: Google
 Language: Cpp
@@ -108,6 +116,7 @@ BreakBeforeBraces: Allman
 ```
 
 **2. clang-tidy** (`.clang-tidy`)
+
 ```yaml
 Checks: >
   bugprone-*, cert-*, clang-analyzer-*,
@@ -116,6 +125,7 @@ Checks: >
 ```
 
 **Catégories de checks** :
+
 - 🐛 `bugprone-*` : Détection de bugs potentiels
 - 🔒 `cert-*` : Règles de sécurité CERT
 - 🔍 `clang-analyzer-*` : Analyse statique
@@ -129,6 +139,7 @@ Checks: >
 **Fichier workflow** : `.github/workflows/ci-cd-complete.yml` lignes 31-62
 
 **Validation** :
+
 - [x] `.clang-format` configuré (Google Style)
 - [x] `.clang-tidy` configuré (10+ catégories)
 - [x] Vérification dans la CI
@@ -144,6 +155,7 @@ Checks: >
 **Type** : Multi-stage Alpine Linux
 
 **Architecture** :
+
 ```dockerfile
 # Stage 1: Builder
 FROM alpine:3.18 AS builder
@@ -160,6 +172,7 @@ FROM alpine:3.18
 ```
 
 **Tests effectués** :
+
 ```bash
 # Build réussi
 docker build -t roguebox:test .
@@ -176,6 +189,7 @@ docker run --rm -v $(pwd):/workspace roguebox:test scan --root /workspace/tests 
 ```
 
 **Healthcheck** :
+
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
     CMD roguebox --version || exit 1
@@ -185,10 +199,12 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
 **Fichier workflow** : `.github/workflows/ci-cd-complete.yml` lignes 177-235
 
 **Registry** : GitHub Container Registry (GHCR)
+
 - Image tagguée : `ghcr.io/xxxsamyxxx/roguebox:latest`
 - Push automatique sur tag `v*`
 
 **Validation** :
+
 - [x] Dockerfile multi-stage créé
 - [x] Build Alpine réussi
 - [x] Tests dans le builder
@@ -209,6 +225,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
 **Plateformes** : Linux + Windows
 
 **Configuration CMake** :
+
 ```cmake
 project(RogueMagicBox VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
@@ -216,11 +233,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ```
 
 **Targets** :
+
 - `roguecore` : Bibliothèque statique (modules core + CLI)
 - `roguebox` : Exécutable principal
 - `rogue_tests` : Tests unitaires
 
 **Compilation locale** :
+
 ```bash
 # Linux
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -234,6 +253,7 @@ cmake --build build --config Release -j
 ```
 
 **Artifacts générés** :
+
 - Linux : `roguebox` (ELF 64-bit executable)
 - Windows : `roguebox.exe` (PE32+ executable)
 - Packages : `RogueMagicBox-*.zip`, `RogueMagicBox-*.tar.gz` (via CPack)
@@ -242,6 +262,7 @@ cmake --build build --config Release -j
 **Fichier workflow** : `.github/workflows/ci-cd-complete.yml` lignes 64-123
 
 **Matrix CI** :
+
 ```yaml
 strategy:
   matrix:
@@ -250,6 +271,7 @@ strategy:
 ```
 
 **Validation** :
+
 - [x] CMake 3.20+ configuré
 - [x] C++17 standard appliqué
 - [x] Build Linux réussi
@@ -267,6 +289,7 @@ strategy:
 **Plateforme** : SonarCloud (SaaS)
 
 **Configuration** (`sonar-project.properties`) :
+
 ```properties
 sonar.projectKey=XxxSamyxxX_RogueMagicBox
 sonar.organization=xxxsamyxxx
@@ -285,6 +308,7 @@ sonar.cfamily.threads=4
 ```
 
 **Métriques surveillées** :
+
 - 🐛 **Bugs** : Erreurs logiques (target: 0)
 - 🔒 **Vulnerabilities** : Failles de sécurité (target: 0)
 - 🧹 **Code Smells** : Mauvaises pratiques (target: < 50)
@@ -296,6 +320,7 @@ sonar.cfamily.threads=4
 **Fichier workflow** : `.github/workflows/ci-cd-complete.yml` lignes 237-284
 
 **Workflow** :
+
 ```yaml
 - name: Configure and build with wrapper
   run: |
@@ -312,6 +337,7 @@ sonar.cfamily.threads=4
 ```
 
 **Setup requis** :
+
 1. Créer compte SonarCloud (https://sonarcloud.io)
 2. Importer projet GitHub
 3. Générer token SonarCloud
@@ -320,6 +346,7 @@ sonar.cfamily.threads=4
 **Dashboard** : https://sonarcloud.io/dashboard?id=XxxSamyxxX_RogueMagicBox
 
 **Validation** :
+
 - [x] Configuration SonarCloud créée
 - [x] Build-wrapper C++ intégré
 - [x] Workflow CI configuré
@@ -335,14 +362,22 @@ sonar.cfamily.threads=4
 **Status** : ✅ **VALIDÉ** (Prêt à déclencher)
 
 **Condition de déploiement** :
+
 ```yaml
 deploy:
-  needs: [code-quality, build-and-test, regression-tests, 
-          docker-build-test, sonarcloud-analysis]
+  needs:
+    [
+      code-quality,
+      build-and-test,
+      regression-tests,
+      docker-build-test,
+      sonarcloud-analysis,
+    ]
   if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
 ```
 
 **Déploiement déclenché UNIQUEMENT si** :
+
 1. ✅ Stage 1: Code quality passé
 2. ✅ Stage 2: Build + tests unitaires passés (Linux + Windows)
 3. ✅ Stage 3: Tests E2E passés
@@ -353,6 +388,7 @@ deploy:
 **Artifacts déployés** :
 
 **1. GitHub Releases**
+
 ```yaml
 - name: Create GitHub Release
   uses: softprops/action-gh-release@v2
@@ -365,11 +401,13 @@ deploy:
 ```
 
 Contenu :
+
 - `roguebox-ubuntu-latest.zip` (binaire Linux)
 - `roguebox-windows-latest.zip` (binaire Windows)
 - Release notes auto-générées avec highlights
 
 **2. Docker Registry (GHCR)**
+
 ```yaml
 - name: Push Docker image
   run: |
@@ -378,6 +416,7 @@ Contenu :
 ```
 
 Images :
+
 - `ghcr.io/xxxsamyxxx/roguebox:latest`
 - `ghcr.io/xxxsamyxxx/roguebox:1.0.0` (version tagguée)
 
@@ -385,6 +424,7 @@ Images :
 **Fichier workflow** : `.github/workflows/ci-cd-complete.yml` lignes 286-357
 
 **Processus de déploiement** :
+
 ```bash
 # 1. Créer et pusher tag
 git tag -a v1.0.0 -m "Release v1.0.0 - CI/CD Complete"
@@ -404,13 +444,14 @@ git push origin v1.0.0
 ```
 
 **Validation** :
+
 - [x] Conditions de déploiement strictes
 - [x] Dépendances sur tous les stages
 - [x] GitHub Releases configuré
 - [x] Docker Registry (GHCR) configuré
 - [x] Release notes auto-générées
 - [x] Artifacts correctement packagés
-- ⏳ Prêt à déclencher (attente tag v*)
+- ⏳ Prêt à déclencher (attente tag v\*)
 
 ---
 
@@ -422,6 +463,7 @@ git push origin v1.0.0
 **Validation** : ✅ **APPLIQUÉ AVEC SUCCÈS**
 
 **Commande utilisée** :
+
 ```powershell
 .\roguebox.exe full-run `
   --root "..\..\..\PRA" `
@@ -430,6 +472,7 @@ git push origin v1.0.0
 ```
 
 **Résultat** :
+
 ```
 [info] git: Repo already initialized
 ✓ Created repository XxxSamyxxX/PoC-Workshop on github.com
@@ -445,6 +488,7 @@ Writing objects: 100% (13/13), 8.34 KiB | 2.08 MiB/s, done.
 ```
 
 **Preuves** :
+
 - [x] Scan du dossier PRA effectué
 - [x] Repo GitHub créé automatiquement
 - [x] Tous les fichiers pushés (13 objets)
@@ -457,53 +501,54 @@ Writing objects: 100% (13/13), 8.34 KiB | 2.08 MiB/s, done.
 
 ## 📈 Récapitulatif Final
 
-| Critère | Status | Validation Locale | CI/CD | Production |
-|---------|--------|-------------------|-------|------------|
-| **1. Tests Unitaires** | ✅ | ✅ | ✅ | ✅ |
-| **2. Tests Non-Régression** | ✅ | ✅ | ✅ | ✅ |
-| **3. Norme de Code** | ✅ | ✅ | ✅ | ✅ |
-| **4. Test Docker** | ✅ | ✅ | ✅ | ✅ |
-| **5. Compilation** | ✅ | ✅ | ✅ | ✅ |
-| **6. SonarQube** | ✅ | ✅ | ✅ | ⏳* |
-| **7. Déploiement** | ✅ | ✅ | ✅ | ⏳** |
-| **Application Autre Défi** | ✅ | ✅ | N/A | ✅ |
+| Critère                     | Status | Validation Locale | CI/CD | Production |
+| --------------------------- | ------ | ----------------- | ----- | ---------- |
+| **1. Tests Unitaires**      | ✅     | ✅                | ✅    | ✅         |
+| **2. Tests Non-Régression** | ✅     | ✅                | ✅    | ✅         |
+| **3. Norme de Code**        | ✅     | ✅                | ✅    | ✅         |
+| **4. Test Docker**          | ✅     | ✅                | ✅    | ✅         |
+| **5. Compilation**          | ✅     | ✅                | ✅    | ✅         |
+| **6. SonarQube**            | ✅     | ✅                | ✅    | ⏳\*       |
+| **7. Déploiement**          | ✅     | ✅                | ✅    | ⏳\*\*     |
+| **Application Autre Défi**  | ✅     | ✅                | N/A   | ✅         |
 
 **Légende** :
+
 - ✅ = Validé et fonctionnel
-- ⏳* = Prêt, nécessite compte SonarCloud + token
-- ⏳** = Prêt, nécessite push tag `v*`
+- ⏳\* = Prêt, nécessite compte SonarCloud + token
+- ⏳\*_ = Prêt, nécessite push tag `v_`
 
 ---
 
 ## 🔗 Ressources
 
-| Ressource | URL |
-|-----------|-----|
-| **Repo GitHub** | https://github.com/XxxSamyxxX/RogueMagicBox |
-| **Workflow CI/CD** | https://github.com/XxxSamyxxX/RogueMagicBox/blob/master/.github/workflows/ci-cd-complete.yml |
-| **Documentation CI/CD** | https://github.com/XxxSamyxxX/RogueMagicBox/blob/master/docs/CI_CD.md |
-| **Validation Défi** | https://github.com/XxxSamyxxX/RogueMagicBox/blob/master/docs/DEFI_CICD.md |
-| **Application PRA** | https://github.com/XxxSamyxxX/PoC-Workshop |
-| **Docker Registry** | https://github.com/XxxSamyxxX/RogueMagicBox/pkgs/container/roguebox |
-| **SonarCloud** | https://sonarcloud.io/dashboard?id=XxxSamyxxX_RogueMagicBox |
+| Ressource               | URL                                                                                          |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| **Repo GitHub**         | https://github.com/XxxSamyxxX/RogueMagicBox                                                  |
+| **Workflow CI/CD**      | https://github.com/XxxSamyxxX/RogueMagicBox/blob/master/.github/workflows/ci-cd-complete.yml |
+| **Documentation CI/CD** | https://github.com/XxxSamyxxX/RogueMagicBox/blob/master/docs/CI_CD.md                        |
+| **Validation Défi**     | https://github.com/XxxSamyxxX/RogueMagicBox/blob/master/docs/DEFI_CICD.md                    |
+| **Application PRA**     | https://github.com/XxxSamyxxX/PoC-Workshop                                                   |
+| **Docker Registry**     | https://github.com/XxxSamyxxX/RogueMagicBox/pkgs/container/roguebox                          |
+| **SonarCloud**          | https://sonarcloud.io/dashboard?id=XxxSamyxxX_RogueMagicBox                                  |
 
 ---
 
 ## 📊 Statistiques du Projet
 
-| Métrique | Valeur |
-|----------|--------|
-| **Fichiers sources** | 60+ |
-| **Lignes de code** | ~5800 |
-| **Lignes documentation** | ~3000 |
-| **Tests unitaires** | 4 fichiers, 3 modules |
-| **Tests E2E** | 8 scénarios |
-| **Workflows CI/CD** | 4 fichiers |
-| **Stages pipeline** | 7 |
-| **Plateformes** | 2 (Linux, Windows) |
-| **Build time (local)** | ~3s |
-| **Build time (Docker)** | ~10s |
-| **Tests execution** | <1s |
+| Métrique                 | Valeur                |
+| ------------------------ | --------------------- |
+| **Fichiers sources**     | 60+                   |
+| **Lignes de code**       | ~5800                 |
+| **Lignes documentation** | ~3000                 |
+| **Tests unitaires**      | 4 fichiers, 3 modules |
+| **Tests E2E**            | 8 scénarios           |
+| **Workflows CI/CD**      | 4 fichiers            |
+| **Stages pipeline**      | 7                     |
+| **Plateformes**          | 2 (Linux, Windows)    |
+| **Build time (local)**   | ~3s                   |
+| **Build time (Docker)**  | ~10s                  |
+| **Tests execution**      | <1s                   |
 
 ---
 

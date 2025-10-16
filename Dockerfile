@@ -50,12 +50,14 @@ COPY --from=builder /install/bin/roguebox /usr/local/bin/roguebox
 COPY --from=builder /install/share/roguebox/ /usr/local/share/roguebox/
 
 # Créer dossiers pour logs et config
-RUN mkdir -p /workspace /logs /config
+RUN mkdir -p /workspace /logs /config && \
+    apk add --no-cache bash
 
 WORKDIR /workspace
 
-# Variables d'environnement
-ENV GITHUB_TOKEN=""
+# Variables d'environnement (le token sera passé au runtime avec -e ou via build-arg)
+ARG GITHUB_TOKEN=""
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
 ENV ROGUEBOX_CONFIG=/config/rogue.toml
 
 # Health check (vérifier que le binaire fonctionne)
