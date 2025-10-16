@@ -262,19 +262,16 @@ jobs:
           REPO_NAME="RogueBox-CI-Test-${TIMESTAMP}"
 
           echo "🧪 Testing full-run in Docker with test data → ${REPO_NAME}"
-
+          
           # Run full-run in Docker (creates real private repo)
           docker run --rm \
             -v /tmp/ci-test-workspace:/workspace \
             -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
-            -e REPO_NAME="${REPO_NAME}" \
             ${{ env.DOCKER_IMAGE }}:test \
-            sh -c "git config --global --add safe.directory /workspace && /usr/local/bin/roguebox full-run --root /workspace --repo-name \${REPO_NAME} --private" || {
+            /bin/sh -c "git config --global --add safe.directory /workspace && roguebox full-run --root /workspace --repo-name '${REPO_NAME}' --private" || {
             echo "⚠️  Full-run test failed (non-blocking)"
             exit 0
-          }
-
-          echo "✅ Docker full-run test passed - Private repository created: ${REPO_NAME}"
+          }          echo "✅ Docker full-run test passed - Private repository created: ${REPO_NAME}"
           echo "📦 Repository URL: https://github.com/${{ github.actor }}/${REPO_NAME}"
 
       - name: 🏷️ Tag image for registry
