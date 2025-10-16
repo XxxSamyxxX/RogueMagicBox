@@ -253,14 +253,14 @@ jobs:
           echo "Timestamp: $(date)" >> /tmp/ci-test-workspace/INFO.txt
           mkdir -p /tmp/ci-test-workspace/src
           echo "console.log('Hello from CI test');" > /tmp/ci-test-workspace/src/test.js
-
+          
           # Generate unique repo name
           TIMESTAMP=$(date +%s)
           REPO_NAME="RogueBox-CI-Test-${TIMESTAMP}"
-
-          echo "🧪 Testing full-run in Docker with test data → ${REPO_NAME}"
-
-          # Run full-run in Docker (private repo)
+          
+          echo "🧪 Testing full-run in Docker with test data (DRY-RUN) → ${REPO_NAME}"
+          
+          # Run full-run in Docker (DRY-RUN mode - no actual repo creation)
           docker run --rm \
             -v /tmp/ci-test-workspace:/workspace \
             -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
@@ -268,15 +268,14 @@ jobs:
             full-run \
               --root /workspace \
               --repo-name "${REPO_NAME}" \
-              --private || {
+              --private \
+              --dry-run || {
             echo "⚠️  Full-run test failed (non-blocking)"
             exit 0
           }
-
-          echo "✅ Docker full-run test passed - Private repository created: ${REPO_NAME}"
-          echo "📦 Repository URL: https://github.com/${{ github.actor }}/${REPO_NAME}"
-
-      - name: 🏷️ Tag image for registry
+          
+          echo "✅ Docker full-run test passed (dry-run mode - no repo created)"
+          echo "� Would have created: https://github.com/${{ github.actor }}/${REPO_NAME}"      - name: 🏷️ Tag image for registry
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
         run: |
           docker tag ${{ env.DOCKER_IMAGE }}:test ${{ env.DOCKER_IMAGE }}:latest
