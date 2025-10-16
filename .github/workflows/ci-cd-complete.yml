@@ -244,7 +244,7 @@ jobs:
       - name: 🧪 Test Docker image - Full run with test data
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           # Create test workspace with sample files
           mkdir -p /tmp/ci-test-workspace
@@ -258,9 +258,9 @@ jobs:
           TIMESTAMP=$(date +%s)
           REPO_NAME="RogueBox-CI-Test-${TIMESTAMP}"
           
-          echo "🧪 Testing full-run in Docker with test data (DRY-RUN) → ${REPO_NAME}"
+          echo "🧪 Testing full-run in Docker with test data → ${REPO_NAME}"
           
-          # Run full-run in Docker (DRY-RUN mode - no actual repo creation)
+          # Run full-run in Docker (creates real private repo)
           docker run --rm \
             -v /tmp/ci-test-workspace:/workspace \
             -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
@@ -268,14 +268,13 @@ jobs:
             full-run \
               --root /workspace \
               --repo-name "${REPO_NAME}" \
-              --private \
-              --dry-run || {
+              --private || {
             echo "⚠️  Full-run test failed (non-blocking)"
             exit 0
           }
           
-          echo "✅ Docker full-run test passed (dry-run mode - no repo created)"
-          echo "📝 Would have created: https://github.com/${{ github.actor }}/${REPO_NAME}"
+          echo "✅ Docker full-run test passed - Private repository created: ${REPO_NAME}"
+          echo "� Repository URL: https://github.com/${{ github.actor }}/${REPO_NAME}"
 
       - name: 🏷️ Tag image for registry
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
