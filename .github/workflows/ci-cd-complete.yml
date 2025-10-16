@@ -269,7 +269,7 @@ jobs:
             -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
             -e REPO_NAME="${REPO_NAME}" \
             ${{ env.DOCKER_IMAGE }}:test \
-            sh -c "git config --global --add safe.directory /workspace && roguebox full-run --root /workspace --repo-name \${REPO_NAME} --private" || {
+            sh -c "git config --global --add safe.directory /workspace && /usr/local/bin/roguebox full-run --root /workspace --repo-name \${REPO_NAME} --private" || {
             echo "⚠️  Full-run test failed (non-blocking)"
             exit 0
           }
