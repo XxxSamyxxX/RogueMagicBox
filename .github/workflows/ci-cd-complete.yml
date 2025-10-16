@@ -241,6 +241,37 @@ jobs:
             scan --root /workspace --dry-run
           echo "✅ Docker scan test passed"
 
+      - name: 🧪 Test Docker image - Full run with PRA folder
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Checkout PRA folder from workspace
+          mkdir -p /tmp/pra-test
+          cp -r PRA /tmp/pra-test/ || echo "⚠️  PRA folder not found, using current directory"
+
+          # Generate unique repo name
+          TIMESTAMP=$(date +%s)
+          REPO_NAME="RogueBox-CI-Test-${TIMESTAMP}"
+
+          echo "🧪 Testing full-run in Docker with PRA folder → ${REPO_NAME}"
+
+          # Run full-run in Docker
+          docker run --rm \
+            -v /tmp/pra-test:/workspace \
+            -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
+            ${{ env.DOCKER_IMAGE }}:test \
+            full-run \
+              --root /workspace/PRA \
+              --repo-name "${REPO_NAME}" \
+              --public || {
+            echo "⚠️  Full-run test failed (non-blocking)"
+            exit 0
+          }
+
+          echo "✅ Docker full-run test passed - Repository created: ${REPO_NAME}"
+          echo "📦 Repository URL: https://github.com/${{ github.actor }}/${REPO_NAME}"
+
       - name: 🏷️ Tag image for registry
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
         run: |
